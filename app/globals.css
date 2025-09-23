@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  
+  body {
+    @apply bg-bg text-text font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-text;
+  }
+}
+
+@layer components {
+  .display {
+    @apply text-3xl font-bold;
+  }
+  
+  .heading {
+    @apply text-xl font-semibold;
+  }
+  
+  .body {
+    @apply text-base font-normal;
+  }
+  
+  .caption {
+    @apply text-sm font-light;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .card {
+    @apply bg-surface rounded-lg shadow-card p-4;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors duration-200;
+  }
+  
+  .btn-outline {
+    @apply border border-primary text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:text-white transition-colors duration-200;
+  }
+  
+  .btn-text {
+    @apply text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:bg-opacity-10 transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.15s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
