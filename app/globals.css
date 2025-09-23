@@ -8,13 +8,13 @@
   * {
     @apply border-gray-200;
   }
-  
+
   body {
-    @apply bg-bg text-text font-sans;
+    @apply bg-blue-50 text-gray-900 font-sans;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
-    @apply text-text;
+    @apply text-gray-900;
   }
 }
 
@@ -40,19 +40,19 @@
   }
   
   .card {
-    @apply bg-surface rounded-lg shadow-card p-4;
+    @apply bg-white rounded-lg shadow-lg p-4;
   }
-  
+
   .btn-primary {
-    @apply bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors duration-200;
+    @apply bg-blue-800 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-900 transition-colors duration-200;
   }
-  
+
   .btn-outline {
-    @apply border border-primary text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:text-white transition-colors duration-200;
+    @apply border border-blue-800 text-blue-800 px-4 py-2 rounded-md font-medium hover:bg-blue-800 hover:text-white transition-colors duration-200;
   }
-  
+
   .btn-text {
-    @apply text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:bg-opacity-10 transition-colors duration-200;
+    @apply text-blue-800 px-4 py-2 rounded-md font-medium hover:bg-blue-800 hover:bg-blue-50 transition-colors duration-200;
   }
 }
 

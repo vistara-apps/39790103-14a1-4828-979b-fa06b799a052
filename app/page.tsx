@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -27,7 +26,7 @@ export default function HealthConnectApp() {
     message: string;
   } | null>(null);
 
-  const { context } = useMiniKit();
+  // const { context } = useMiniKit(); // Temporarily disabled
 
   const showNotification = (type: 'success' | 'info' | 'warning', message: string) => {
     setNotification({ type, message });
@@ -48,7 +47,7 @@ export default function HealthConnectApp() {
   const renderDashboard = () => (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-primary text-white rounded-lg p-6 mx-4 -mt-2">
+      <div className="bg-blue-800 text-white rounded-lg p-6 mx-4 -mt-2">
         <h2 className="text-xl font-semibold mb-2">
           Welcome to HealthConnect
         </h2>
@@ -338,7 +337,7 @@ export default function HealthConnectApp() {
   };
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen bg-blue-50">
       <Header
         title={getHeaderTitle()}
         subtitle={getHeaderSubtitle()}
@@ -361,16 +360,16 @@ export default function HealthConnectApp() {
       >
         <div className="p-4">
           <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-2xl font-semibold text-accent">
-                {context?.user?.displayName ? context.user.displayName.charAt(0) : 'U'}
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-2xl font-semibold text-green-600">
+                U
               </span>
             </div>
             <h3 className="heading">
-              {context?.user?.displayName || 'User Profile'}
+              User Profile
             </h3>
-            <p className="text-secondary-text">
-              {context?.user?.username ? `@${context.user.username}` : 'Public Health Professional'}
+            <p className="text-gray-600">
+              Public Health Professional
             </p>
           </div>
           
