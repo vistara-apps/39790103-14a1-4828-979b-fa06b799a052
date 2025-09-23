@@ -17,7 +17,7 @@ export function Header({
   onProfileClick 
 }: HeaderProps) {
   return (
-    <header className="bg-primary text-white p-4 pb-6">
+    <header className="bg-blue-800 text-white p-4 pb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex-1">
           <h1 className="display text-white">{title}</h1>
@@ -38,7 +38,7 @@ export function Header({
               variant="outline"
               size="sm"
               onClick={onProfileClick}
-              className="border-white/30 text-white hover:bg-white hover:text-primary"
+              className="border-white/30 text-white hover:bg-white hover:text-blue-800"
             >
               <User className="h-4 w-4 mr-1" />
               Profile
