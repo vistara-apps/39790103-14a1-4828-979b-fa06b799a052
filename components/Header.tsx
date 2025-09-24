@@ -1,6 +1,7 @@
 'use client';
 
-import { Bell, Settings, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, Settings, User, Moon, Sun } from 'lucide-react';
 import { PrimaryButton } from './ui/PrimaryButton';
 
 interface HeaderProps {
@@ -16,6 +17,27 @@ export function Header({
   showProfile = true, 
   onProfileClick 
 }: HeaderProps) {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    setIsDark(darkMode);
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDark;
+    setIsDark(newDarkMode);
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    if (newDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
   return (
     <header className="bg-primary text-white p-4 pb-6">
       <div className="flex items-center justify-between mb-4">
@@ -28,10 +50,23 @@ export function Header({
         
         {showProfile && (
           <div className="flex items-center space-x-2">
-            <button className="p-2 text-white/80 hover:text-white transition-colors duration-200">
+            <button 
+              className="p-2 text-white/80 hover:text-white transition-colors duration-200 rounded-lg hover:bg-white/10 touch-manipulation"
+              aria-label="Notifications"
+            >
               <Bell className="h-5 w-5" />
             </button>
-            <button className="p-2 text-white/80 hover:text-white transition-colors duration-200">
+            <button 
+              onClick={toggleDarkMode}
+              className="p-2 text-white/80 hover:text-white transition-colors duration-200 rounded-lg hover:bg-white/10 touch-manipulation"
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
+            <button 
+              className="p-2 text-white/80 hover:text-white transition-colors duration-200 rounded-lg hover:bg-white/10 touch-manipulation"
+              aria-label="Settings"
+            >
               <Settings className="h-5 w-5" />
             </button>
             <PrimaryButton
@@ -39,6 +74,7 @@ export function Header({
               size="sm"
               onClick={onProfileClick}
               className="border-white/30 text-white hover:bg-white hover:text-primary"
+              aria-label="Open profile menu"
             >
               <User className="h-4 w-4 mr-1" />
               Profile

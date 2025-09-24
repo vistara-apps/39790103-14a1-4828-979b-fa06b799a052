@@ -19,7 +19,7 @@ export function CampaignCard({
 
   return (
     <div className={cn(
-      'card animate-fade-in',
+      'card animate-fade-in hover-lift cursor-pointer transition-all',
       isCompleted && 'opacity-75'
     )}>
       <div className="flex items-start justify-between mb-3">
@@ -27,7 +27,7 @@ export function CampaignCard({
           {campaign.title}
         </h3>
         <div className={cn(
-          'px-2 py-1 rounded-full text-xs font-medium ml-3',
+          'px-3 py-1 rounded-full text-xs font-medium ml-3 animate-scale-in',
           statusColors[campaign.status]
         )}>
           {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
@@ -72,10 +72,10 @@ export function CampaignCard({
       {!isCompleted && onJoin && (
         <PrimaryButton
           onClick={onJoin}
-          className="w-full flex items-center justify-center"
+          className="w-full flex items-center justify-center transition-all hover:bg-primary-600 hover:shadow-md"
         >
           Join Campaign
-          <ArrowRight className="h-4 w-4 ml-2" />
+          <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
         </PrimaryButton>
       )}
 

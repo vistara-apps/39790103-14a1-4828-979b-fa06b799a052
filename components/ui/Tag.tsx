@@ -22,9 +22,12 @@ export function Tag({
       className={cn(
         baseClasses,
         variantClasses[variant],
-        onClick && 'cursor-pointer hover:scale-105'
+        onClick && 'cursor-pointer hover:scale-105 active:scale-95 touch-manipulation',
+        'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1'
       )}
       disabled={!onClick}
+      aria-pressed={variant === 'filter' ? selected : undefined}
+      aria-label={variant === 'filter' ? `Filter by ${label}` : undefined}
     >
       {label}
     </button>

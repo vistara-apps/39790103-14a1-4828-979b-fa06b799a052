@@ -26,6 +26,11 @@ const config: Config = {
           900: "var(--primary-900)",
           950: "var(--primary-950)",
         },
+        // Surface and text colors
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        text: "var(--text)",
+        "secondary-text": "var(--secondary-text)",
         secondary: {
           DEFAULT: "var(--secondary)",
           50: "var(--secondary-50)",

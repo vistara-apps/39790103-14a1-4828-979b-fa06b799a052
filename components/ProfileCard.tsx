@@ -15,7 +15,7 @@ export function ProfileCard({
 
   return (
     <div className={cn(
-      'card animate-fade-in',
+      'card animate-fade-in hover-lift cursor-pointer transition-all',
       isCompact ? 'p-3' : 'p-4'
     )}>
       <div className="flex items-start space-x-3">

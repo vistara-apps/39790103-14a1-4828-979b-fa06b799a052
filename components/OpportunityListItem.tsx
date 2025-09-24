@@ -26,13 +26,13 @@ export function OpportunityListItem({
 
   return (
     <div className={cn(
-      'card animate-fade-in',
-      isFeatured && 'border-2 border-accent'
+      'card animate-fade-in hover-lift cursor-pointer transition-all',
+      isFeatured && 'border-2 border-accent shadow-md'
     )}>
       {isFeatured && (
         <div className="flex items-center mb-3">
-          <div className="bg-accent text-white px-2 py-1 rounded text-xs font-medium">
-            Featured
+          <div className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium animate-scale-in">
+            ⭐ Featured
           </div>
         </div>
       )}
@@ -87,10 +87,10 @@ export function OpportunityListItem({
         <PrimaryButton
           size="sm"
           onClick={onApply}
-          className="flex items-center"
+          className="flex items-center transition-all hover:bg-primary-600 hover:shadow-md group"
         >
           Apply
-          <ExternalLink className="h-3 w-3 ml-1" />
+          <ExternalLink className="h-3 w-3 ml-1 transition-transform group-hover:translate-x-0.5" />
         </PrimaryButton>
       </div>
     </div>
