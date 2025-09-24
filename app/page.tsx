@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
+import { useAccount } from 'wagmi';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -13,21 +13,24 @@ import { Tag } from '@/components/ui/Tag';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { InFrameNotification } from '@/components/ui/InFrameNotification';
+import PaymentModal from '@/components/PaymentModal';
 import { mockUsers, mockOpportunities, mockCampaigns, mockResources } from '@/lib/mock-data';
 import { EXPERTISE_TAGS, INTEREST_TAGS } from '@/lib/constants';
-import { Globe, Users as UsersIcon, BarChart3 } from 'lucide-react';
+import { Globe, Users as UsersIcon, BarChart3, Crown } from 'lucide-react';
 
 export default function HealthConnectApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [showProfileSheet, setShowProfileSheet] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [premiumData, setPremiumData] = useState<any>(null);
   const [notification, setNotification] = useState<{
     type: 'success' | 'info' | 'warning';
     message: string;
   } | null>(null);
 
-  const { context } = useMiniKit();
+  const { isConnected } = useAccount();
 
   const showNotification = (type: 'success' | 'info' | 'warning', message: string) => {
     setNotification({ type, message });
@@ -43,6 +46,16 @@ export default function HealthConnectApp() {
 
   const handleApplyOpportunity = (opportunityId: string) => {
     showNotification('info', 'Redirecting to application page...');
+  };
+
+  const handlePremiumAccess = () => {
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = (data: any) => {
+    setPremiumData(data.data);
+    setShowPaymentModal(false);
+    showNotification('success', 'Premium content unlocked successfully!');
   };
 
   const renderDashboard = () => (
@@ -129,6 +142,59 @@ export default function HealthConnectApp() {
               onJoin={() => handleJoinCampaign(campaign.campaignId)}
             />
           ))}
+        </div>
+      </div>
+
+      {/* Premium Health Insights */}
+      <div className="px-4">
+        <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-lg p-6">
+          <div className="flex items-center mb-3">
+            <Crown className="w-6 h-6 mr-2" />
+            <h3 className="text-lg font-semibold">Premium Health Insights</h3>
+          </div>
+          <p className="text-white/90 mb-4">
+            Get personalized health recommendations, specialist referrals, and advanced analytics.
+          </p>
+          
+          {premiumData ? (
+            <div className="space-y-4">
+              <div className="bg-white/10 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">✨ Premium Content Unlocked</h4>
+                <p className="text-sm text-white/80 mb-3">
+                  Specialist Recommendations: {premiumData.specialistRecommendations?.length || 0} found
+                </p>
+                <p className="text-sm text-white/80 mb-3">
+                  Risk Analysis: {premiumData.advancedAnalytics?.riskFactors?.length || 0} factors analyzed
+                </p>
+                <p className="text-sm text-white/80">
+                  Personalized Plan: Complete wellness roadmap available
+                </p>
+              </div>
+              <PrimaryButton
+                variant="outline"
+                className="w-full border-white text-white hover:bg-white hover:text-purple-600"
+                onClick={() => {
+                  // In a real app, this would navigate to detailed premium content
+                  showNotification('info', 'Viewing detailed premium health insights...');
+                }}
+              >
+                View Full Report
+              </PrimaryButton>
+            </div>
+          ) : (
+            <div>
+              <div className="text-sm text-white/80 mb-4">
+                💰 5 USDC • 🔗 Base Network
+              </div>
+              <PrimaryButton
+                variant="outline"
+                className="w-full border-white text-white hover:bg-white hover:text-purple-600"
+                onClick={handlePremiumAccess}
+              >
+                {isConnected ? 'Unlock Premium Content' : 'Connect Wallet & Unlock'}
+              </PrimaryButton>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -363,14 +429,14 @@ export default function HealthConnectApp() {
           <div className="text-center mb-6">
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3">
               <span className="text-2xl font-semibold text-accent">
-                {context?.user?.displayName ? context.user.displayName.charAt(0) : 'U'}
+                {isConnected ? 'W' : 'U'}
               </span>
             </div>
             <h3 className="heading">
-              {context?.user?.displayName || 'User Profile'}
+              User Profile
             </h3>
             <p className="text-secondary-text">
-              {context?.user?.username ? `@${context.user.username}` : 'Public Health Professional'}
+              {isConnected ? 'Wallet Connected' : 'Public Health Professional'}
             </p>
           </div>
           
@@ -387,6 +453,12 @@ export default function HealthConnectApp() {
           </div>
         </div>
       </BottomSheet>
+
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onSuccess={handlePaymentSuccess}
+      />
 
       {notification && (
         <InFrameNotification
