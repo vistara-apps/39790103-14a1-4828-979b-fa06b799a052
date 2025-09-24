@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -13,24 +12,56 @@ import { Tag } from '@/components/ui/Tag';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { InFrameNotification } from '@/components/ui/InFrameNotification';
+import { LoadingState, EmptyState } from '@/components/ui/LoadingState';
+import { ProfileCardSkeleton, OpportunityCardSkeleton, CampaignCardSkeleton, ResourceCardSkeleton } from '@/components/ui/Skeleton';
 import { mockUsers, mockOpportunities, mockCampaigns, mockResources } from '@/lib/mock-data';
 import { EXPERTISE_TAGS, INTEREST_TAGS } from '@/lib/constants';
-import { Globe, Users as UsersIcon, BarChart3 } from 'lucide-react';
+import { Globe, Users as UsersIcon, BarChart3, Search as SearchIcon } from 'lucide-react';
 
 export default function HealthConnectApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [showProfileSheet, setShowProfileSheet] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [notification, setNotification] = useState<{
     type: 'success' | 'info' | 'warning';
     message: string;
   } | null>(null);
 
-  const { context } = useMiniKit();
+  // Mock context for demo purposes
+  const context = {
+    user: {
+      displayName: 'Dr. Sarah Wilson',
+      username: 'swilson_mph'
+    }
+  };
+
+  // Simulate initial loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const showNotification = (type: 'success' | 'info' | 'warning', message: string) => {
     setNotification({ type, message });
+  };
+
+  const handleTabChange = (newTab: string) => {
+    if (newTab !== activeTab) {
+      setIsLoading(true);
+      setActiveTab(newTab);
+      setSearchQuery('');
+      setSelectedFilters([]);
+      
+      // Simulate loading delay
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+    }
   };
 
   const handleConnect = (userId: string) => {
@@ -141,19 +172,32 @@ export default function HealthConnectApp() {
           placeholder="Search professionals..."
           value={searchQuery}
           onChange={setSearchQuery}
+          disabled={isLoading}
         />
       </div>
       
       <div className="px-4">
         <h3 className="heading mb-3">Suggested Connections</h3>
         <div className="space-y-3">
-          {mockUsers.map((user) => (
-            <ProfileCard
-              key={user.userId}
-              user={user}
-              onConnect={() => handleConnect(user.userId)}
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <ProfileCardSkeleton key={i} />
+            ))
+          ) : mockUsers.length === 0 ? (
+            <EmptyState
+              title="No connections found"
+              description="Try adjusting your search or check back later for new professionals."
+              icon={<UsersIcon className="h-12 w-12" />}
             />
-          ))}
+          ) : (
+            mockUsers.map((user) => (
+              <ProfileCard
+                key={user.userId}
+                user={user}
+                onConnect={() => handleConnect(user.userId)}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -166,6 +210,7 @@ export default function HealthConnectApp() {
           placeholder="Search opportunities..."
           value={searchQuery}
           onChange={setSearchQuery}
+          disabled={isLoading}
         />
       </div>
       
@@ -189,13 +234,25 @@ export default function HealthConnectApp() {
         </div>
         
         <div className="space-y-3">
-          {mockOpportunities.map((opportunity) => (
-            <OpportunityListItem
-              key={opportunity.opportunityId}
-              opportunity={opportunity}
-              onApply={() => handleApplyOpportunity(opportunity.opportunityId)}
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <OpportunityCardSkeleton key={i} />
+            ))
+          ) : mockOpportunities.length === 0 ? (
+            <EmptyState
+              title="No opportunities found"
+              description="Check back later for new job postings and projects."
+              icon={<SearchIcon className="h-12 w-12" />}
             />
-          ))}
+          ) : (
+            mockOpportunities.map((opportunity) => (
+              <OpportunityListItem
+                key={opportunity.opportunityId}
+                opportunity={opportunity}
+                onApply={() => handleApplyOpportunity(opportunity.opportunityId)}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -337,6 +394,16 @@ export default function HealthConnectApp() {
     }
   };
 
+  if (isInitialLoading) {
+    return (
+      <LoadingState
+        fullScreen
+        message="Loading HealthConnect..."
+        size="lg"
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-bg">
       <Header
@@ -351,7 +418,7 @@ export default function HealthConnectApp() {
       
       <Navigation
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
       />
 
       <BottomSheet
