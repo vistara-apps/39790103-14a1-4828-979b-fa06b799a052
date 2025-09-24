@@ -66,12 +66,36 @@ A mobile and web application connecting public health professionals, students, a
 
 ## Design System
 
-The app uses a custom design system with:
+The app features a comprehensive design system with:
 
-- **Colors**: Professional health-focused palette with primary blue and accent green
-- **Typography**: Inter font with defined text scales
-- **Components**: Modular, reusable components with consistent styling
-- **Motion**: Subtle animations for enhanced user experience
+### Theme System
+- **Light/Dark Mode**: Automatic system detection with manual toggle
+- **CSS Variables**: HSL-based color system for consistent theming
+- **Theme Provider**: React context for theme management across components
+
+### Colors
+- **Primary**: Professional blue palette (HSL 210 40% variants)
+- **Accent**: Health-focused green palette (HSL 160 70% variants)
+- **Semantic**: Success, warning, error, and info colors
+- **Surface**: Layered background system for depth
+- **Text**: Hierarchical text colors with proper contrast ratios
+
+### Typography
+- **Font**: Inter with optimized loading and font features
+- **Scale**: Responsive text scales from caption to display
+- **Utilities**: Line clamping, gradient text effects
+
+### Components
+- **Buttons**: Primary, outline, ghost, and destructive variants
+- **Forms**: Enhanced inputs with focus states and validation
+- **Cards**: Interactive cards with hover effects and glass morphism
+- **Navigation**: Accessible tab navigation with ARIA support
+- **Loading States**: Skeleton loaders and animated spinners
+
+### Animations
+- **Micro-interactions**: Hover effects, scale transforms, and transitions
+- **Page Transitions**: Fade-in, slide-up, and staggered animations
+- **Accessibility**: Respects prefers-reduced-motion preference
 
 ## Base Mini App Integration
 

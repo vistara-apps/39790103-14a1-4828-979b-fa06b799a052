@@ -15,13 +15,13 @@ export function ProfileCard({
 
   return (
     <div className={cn(
-      'card animate-fade-in',
+      'card-interactive animate-fade-in',
       isCompact ? 'p-3' : 'p-4'
     )}>
       <div className="flex items-start space-x-3">
         {/* Profile Image */}
         <div className={cn(
-          'flex-shrink-0 rounded-full bg-accent/10 flex items-center justify-center',
+          'flex-shrink-0 rounded-full bg-accent/10 flex items-center justify-center ring-2 ring-accent/20',
           isCompact ? 'h-12 w-12' : 'h-16 w-16'
         )}>
           {user.profileImageUrl ? (
@@ -47,14 +47,14 @@ export function ProfileCard({
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
               <h3 className={cn(
-                'font-semibold text-text truncate',
+                'font-semibold text-foreground truncate',
                 isCompact ? 'text-sm' : 'text-base'
               )}>
                 {user.displayName}
               </h3>
               {user.username && (
                 <p className={cn(
-                  'text-secondary-text',
+                  'text-text-secondary',
                   isCompact ? 'text-xs' : 'text-sm'
                 )}>
                   @{user.username}
@@ -75,11 +75,11 @@ export function ProfileCard({
           {/* Location */}
           <div className="flex items-center mt-1">
             <MapPin className={cn(
-              'text-secondary-text mr-1',
+              'text-text-secondary mr-1',
               isCompact ? 'h-3 w-3' : 'h-4 w-4'
             )} />
             <span className={cn(
-              'text-secondary-text',
+              'text-text-secondary',
               isCompact ? 'text-xs' : 'text-sm'
             )}>
               {user.location}
@@ -88,7 +88,7 @@ export function ProfileCard({
 
           {/* Bio */}
           {!isCompact && (
-            <p className="text-sm text-text mt-2 line-clamp-2">
+            <p className="text-sm text-foreground mt-2 line-clamp-2">
               {truncateText(user.bio, 120)}
             </p>
           )}
@@ -100,7 +100,7 @@ export function ProfileCard({
             ))}
             {user.expertiseTags.length > (isCompact ? 2 : 3) && (
               <span className={cn(
-                'text-secondary-text',
+                'text-text-secondary',
                 isCompact ? 'text-xs' : 'text-sm'
               )}>
                 +{user.expertiseTags.length - (isCompact ? 2 : 3)} more

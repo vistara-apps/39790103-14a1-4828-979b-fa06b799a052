@@ -1,24 +1,29 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { useState, forwardRef, InputHTMLAttributes } from 'react';
+import { Search, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface SearchBarProps {
+interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onSubmit'> {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
   onClear?: () => void;
+  onSubmit?: (value: string) => void;
+  loading?: boolean;
   className?: string;
 }
 
-export function SearchBar({ 
+export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({
   placeholder = 'Search...', 
   value = '', 
   onChange, 
   onClear,
-  className 
-}: SearchBarProps) {
+  onSubmit,
+  loading = false,
+  className,
+  ...props
+}, ref) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleClear = () => {
@@ -26,29 +31,62 @@ export function SearchBar({
     onClear?.();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && onSubmit) {
+      onSubmit(value);
+    }
+    props.onKeyDown?.(e);
+  };
+
   return (
-    <div className={cn(
-      'relative flex items-center',
-      className
-    )}>
+    <div className={cn('relative flex items-center', className)}>
       <div className={cn(
-        'relative flex items-center w-full bg-surface rounded-lg border transition-colors duration-200',
-        isFocused ? 'border-accent' : 'border-gray-200'
+        'relative flex items-center w-full rounded-lg border transition-all duration-200',
+        'bg-surface hover:bg-surface-secondary',
+        isFocused 
+          ? 'border-ring ring-2 ring-ring ring-offset-2' 
+          : 'border-border hover:border-border-secondary',
+        loading && 'pointer-events-none opacity-70'
       )}>
-        <Search className="absolute left-3 h-4 w-4 text-secondary-text" />
+        <div className="absolute left-3 flex items-center">
+          {loading ? (
+            <Loader2 className="h-4 w-4 text-text-secondary animate-spin" />
+          ) : (
+            <Search className="h-4 w-4 text-text-secondary" />
+          )}
+        </div>
+        
         <input
+          ref={ref}
           type="text"
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="w-full pl-10 pr-10 py-3 bg-transparent text-text placeholder-secondary-text focus:outline-none"
+          onKeyDown={handleKeyDown}
+          className={cn(
+            'w-full pl-10 pr-10 py-3 bg-transparent',
+            'text-foreground placeholder:text-text-tertiary',
+            'focus:outline-none',
+            'disabled:cursor-not-allowed disabled:opacity-50'
+          )}
+          disabled={loading}
+          {...props}
         />
-        {value && (
+        
+        {value && !loading && (
           <button
             onClick={handleClear}
-            className="absolute right-3 p-1 text-secondary-text hover:text-text transition-colors duration-200"
+            type="button"
+            className={cn(
+              'absolute right-3 p-1 rounded-md',
+              'text-text-secondary hover:text-text',
+              'hover:bg-surface-tertiary',
+              'transition-all duration-200',
+              'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+            )}
+            aria-label="Clear search"
           >
             <X className="h-4 w-4" />
           </button>
@@ -56,4 +94,6 @@ export function SearchBar({
       </div>
     </div>
   );
-}
+});
+
+SearchBar.displayName = 'SearchBar';
