@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
+import { useAccount, useWalletClient } from 'wagmi';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -13,24 +13,75 @@ import { Tag } from '@/components/ui/Tag';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { InFrameNotification } from '@/components/ui/InFrameNotification';
+import { PaymentModal } from '@/components/ui/PaymentModal';
 import { mockUsers, mockOpportunities, mockCampaigns, mockResources } from '@/lib/mock-data';
 import { EXPERTISE_TAGS, INTEREST_TAGS } from '@/lib/constants';
-import { Globe, Users as UsersIcon, BarChart3 } from 'lucide-react';
+import { createX402Client, PaymentProof } from '@/lib/x402-client';
+import { Globe, Users as UsersIcon, BarChart3, Lock, Sparkles } from 'lucide-react';
 
 export default function HealthConnectApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [showProfileSheet, setShowProfileSheet] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [premiumData, setPremiumData] = useState<any>(null);
+  const [hasPaidAccess, setHasPaidAccess] = useState(false);
   const [notification, setNotification] = useState<{
     type: 'success' | 'info' | 'warning';
     message: string;
   } | null>(null);
 
-  const { context } = useMiniKit();
+  const { address, isConnected } = useAccount();
+  const { data: walletClient } = useWalletClient();
 
   const showNotification = (type: 'success' | 'info' | 'warning', message: string) => {
     setNotification({ type, message });
+  };
+
+  const handleAccessPremiumData = async () => {
+    if (!walletClient) {
+      setShowPaymentModal(true);
+      return;
+    }
+
+    try {
+      const x402Client = createX402Client(walletClient);
+      const response = await x402Client.makeRequest({
+        method: 'GET',
+        url: '/api/premium-data',
+      });
+      
+      setPremiumData(response.data);
+      setHasPaidAccess(true);
+      showNotification('success', 'Premium data access granted!');
+    } catch (error: any) {
+      if (error.response?.status === 402) {
+        setShowPaymentModal(true);
+      } else {
+        showNotification('warning', 'Failed to access premium data');
+      }
+    }
+  };
+
+  const handlePaymentComplete = async (paymentProof: PaymentProof) => {
+    try {
+      const x402Client = createX402Client(walletClient);
+      const response = await x402Client.makeRequest({
+        method: 'GET',
+        url: '/api/premium-data',
+        headers: {
+          'X-Payment-Proof': JSON.stringify(paymentProof)
+        }
+      });
+      
+      setPremiumData(response.data);
+      setHasPaidAccess(true);
+      setShowPaymentModal(false);
+      showNotification('success', 'Payment confirmed! Premium data unlocked.');
+    } catch (error) {
+      showNotification('warning', 'Failed to verify payment');
+    }
   };
 
   const handleConnect = (userId: string) => {
@@ -78,6 +129,50 @@ export default function HealthConnectApp() {
             </div>
             <p className="text-sm font-medium">Data Networks</p>
             <p className="text-xs text-white/80">Data insights</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Premium Data Section */}
+      <div className="px-4">
+        <div className="bg-gradient-to-r from-accent/10 to-primary/10 rounded-lg p-4 border border-accent/20">
+          <div className="flex items-start gap-3">
+            <div className="bg-accent/20 rounded-full p-2">
+              {hasPaidAccess ? (
+                <Sparkles className="w-5 h-5 text-accent" />
+              ) : (
+                <Lock className="w-5 h-5 text-accent" />
+              )}
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-accent mb-1">
+                {hasPaidAccess ? 'Premium Data Unlocked' : 'Premium Health Analytics'}
+              </h3>
+              <p className="text-sm text-secondary-text mb-3">
+                {hasPaidAccess 
+                  ? 'Access advanced health metrics and exclusive research insights.'
+                  : 'Unlock advanced global health metrics, disease burden analytics, and exclusive research insights for 1 USDC.'
+                }
+              </p>
+              {!hasPaidAccess && (
+                <PrimaryButton
+                  onClick={handleAccessPremiumData}
+                  className="text-sm h-8 px-4"
+                >
+                  {isConnected ? 'Access Premium Data' : 'Connect Wallet & Pay'}
+                </PrimaryButton>
+              )}
+              {hasPaidAccess && premiumData && (
+                <div className="space-y-2">
+                  <div className="text-xs font-medium text-accent">Available Insights:</div>
+                  <div className="text-xs text-secondary-text">
+                    • Global Disease Burden Analytics<br/>
+                    • Emerging Infectious Disease Predictions<br/>
+                    • Mental Health Economic Impact Data
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -363,15 +458,36 @@ export default function HealthConnectApp() {
           <div className="text-center mb-6">
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3">
               <span className="text-2xl font-semibold text-accent">
-                {context?.user?.displayName ? context.user.displayName.charAt(0) : 'U'}
+                U
               </span>
             </div>
             <h3 className="heading">
-              {context?.user?.displayName || 'User Profile'}
+              User Profile
             </h3>
             <p className="text-secondary-text">
-              {context?.user?.username ? `@${context.user.username}` : 'Public Health Professional'}
+              Public Health Professional
             </p>
+          </div>
+
+          {/* Wallet Connection Status */}
+          <div className="mb-6 p-3 bg-surface border border-border rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Wallet Status</span>
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+            </div>
+            {isConnected ? (
+              <div>
+                <p className="text-xs text-secondary-text">Connected</p>
+                <p className="text-xs font-mono text-secondary-text mt-1">
+                  {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
+                </p>
+                {hasPaidAccess && (
+                  <p className="text-xs text-accent mt-1">✓ Premium Access</p>
+                )}
+              </div>
+            ) : (
+              <p className="text-xs text-secondary-text">Not connected</p>
+            )}
           </div>
           
           <div className="space-y-4">
@@ -387,6 +503,17 @@ export default function HealthConnectApp() {
           </div>
         </div>
       </BottomSheet>
+
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onPaymentComplete={handlePaymentComplete}
+        paymentDetails={{
+          amount: '1.0',
+          description: 'Access to premium health analytics and exclusive research insights',
+          recipient: '0x742d35Cc8b4a6480D2d5f27b5BF0b8d4C2a71B79'
+        }}
+      />
 
       {notification && (
         <InFrameNotification
