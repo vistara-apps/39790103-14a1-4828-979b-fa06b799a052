@@ -26,16 +26,27 @@ export function SearchBar({
     onClear?.();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleClear();
+    }
+  };
+
   return (
     <div className={cn(
       'relative flex items-center',
       className
     )}>
       <div className={cn(
-        'relative flex items-center w-full bg-surface rounded-lg border transition-colors duration-200',
-        isFocused ? 'border-accent' : 'border-gray-200'
+        'relative flex items-center w-full bg-surface rounded-lg border transition-all duration-200',
+        'hover:border-border-muted',
+        isFocused ? 'border-primary ring-2 ring-primary/20' : 'border-border'
       )}>
-        <Search className="absolute left-3 h-4 w-4 text-secondary-text" />
+        <Search className={cn(
+          'absolute left-3 h-4 w-4 transition-colors duration-200',
+          isFocused ? 'text-primary' : 'text-secondary-text'
+        )} />
+        
         <input
           type="text"
           placeholder={placeholder}
@@ -43,17 +54,31 @@ export function SearchBar({
           onChange={(e) => onChange?.(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="w-full pl-10 pr-10 py-3 bg-transparent text-text placeholder-secondary-text focus:outline-none"
+          onKeyDown={handleKeyDown}
+          aria-label={placeholder}
+          className={cn(
+            'w-full pl-10 pr-10 py-3 bg-transparent text-text placeholder-secondary-text',
+            'focus:outline-none transition-all duration-200',
+            'text-base md:text-sm' // Prevent zoom on iOS
+          )}
         />
+        
         {value && (
           <button
             onClick={handleClear}
-            className="absolute right-3 p-1 text-secondary-text hover:text-text transition-colors duration-200"
+            aria-label="Clear search"
+            className={cn(
+              'absolute right-3 p-1 text-secondary-text hover:text-text',
+              'transition-all duration-200 rounded hover:bg-border/50',
+              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+            )}
           >
             <X className="h-4 w-4" />
           </button>
         )}
       </div>
+      
+      {/* Search suggestions or results could go here */}
     </div>
   );
 }

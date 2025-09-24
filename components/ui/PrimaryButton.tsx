@@ -17,19 +17,46 @@ export function PrimaryButton({
   disabled,
   ...props 
 }: PrimaryButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const isDisabled = disabled || loading;
+  
+  const baseClasses = cn(
+    'inline-flex items-center justify-center font-medium transition-all duration-200',
+    'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+    'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none',
+    'active:scale-95 transform-gpu'
+  );
   
   const variantClasses = {
-    default: 'bg-primary text-white hover:bg-opacity-90',
-    outline: 'border border-primary text-primary hover:bg-primary hover:text-white',
-    text: 'text-primary hover:bg-primary hover:bg-opacity-10',
+    default: cn(
+      'bg-primary text-white shadow-sm',
+      'hover:bg-primary-600 hover:shadow-md hover:scale-105',
+      'focus:ring-primary/50'
+    ),
+    outline: cn(
+      'border border-primary text-primary bg-transparent',
+      'hover:bg-primary hover:text-white hover:scale-105',
+      'focus:ring-primary/30'
+    ),
+    text: cn(
+      'text-primary bg-transparent',
+      'hover:bg-primary/10 hover:scale-105',
+      'focus:ring-primary/30'
+    ),
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm rounded-md',
-    md: 'px-4 py-2 text-base rounded-md',
-    lg: 'px-6 py-3 text-lg rounded-lg',
+    sm: 'px-3 py-1.5 text-sm rounded-md min-h-[32px]',
+    md: 'px-4 py-2 text-base rounded-md min-h-[40px]',
+    lg: 'px-6 py-3 text-lg rounded-lg min-h-[48px]',
   };
+
+  const loadingSpinner = loading && (
+    <div className={cn(
+      'animate-spin rounded-full border-2 border-transparent mr-2',
+      variant === 'default' ? 'border-t-white' : 'border-t-primary',
+      size === 'sm' ? 'h-3 w-3' : size === 'md' ? 'h-4 w-4' : 'h-5 w-5'
+    )} />
+  );
 
   return (
     <button
@@ -37,15 +64,17 @@ export function PrimaryButton({
         baseClasses,
         variantClasses[variant],
         sizeClasses[size],
+        isDisabled && 'hover:scale-100 hover:shadow-none',
         className
       )}
-      disabled={disabled || loading}
+      disabled={isDisabled}
+      aria-busy={loading}
       {...props}
     >
-      {loading && (
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-      )}
-      {children}
+      {loadingSpinner}
+      <span className={cn(loading && 'opacity-75')}>
+        {children}
+      </span>
     </button>
   );
 }
