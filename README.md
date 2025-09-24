@@ -73,13 +73,23 @@ The app uses a custom design system with:
 - **Components**: Modular, reusable components with consistent styling
 - **Motion**: Subtle animations for enhanced user experience
 
-## Base Mini App Integration
+## Base Network Integration
 
-This app is built as a Base Mini App using:
+This app leverages the Base ecosystem with:
 
-- **MiniKit Provider**: Handles Base chain integration and wallet connectivity
-- **Context Access**: Leverages Farcaster user context for seamless onboarding
-- **Mobile-First**: Optimized for mobile experience within Base App
+- **Wagmi Integration**: Wallet connection and transaction management using wagmi
+- **X402 Payment Flow**: Automatic payment processing for premium content access
+- **USDC on Base**: Native USDC token integration for seamless payments
+- **Coinbase Wallet**: Optimized connector for Base network transactions
+- **Mobile-First**: Optimized for mobile experience with responsive design
+
+### Payment Features
+
+- **X402 Protocol**: Automatic payment-required flow for premium API endpoints
+- **USDC Payments**: Native USDC token payments on Base network
+- **Transaction Confirmation**: Real-time transaction status and receipts
+- **Error Handling**: Comprehensive error scenarios with user-friendly messages
+- **Payment Modal**: Step-by-step payment flow with wallet integration
 
 ## Development
 

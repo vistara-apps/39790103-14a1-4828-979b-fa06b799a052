@@ -1,15 +1,18 @@
 'use client';
 
-import { MiniKitProvider } from '@coinbase/minikit';
-import { base } from 'viem/chains';
+import React from 'react';
+import { WagmiProvider } from 'wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { config } from '@/lib/wagmi-config';
+
+const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <MiniKitProvider
-      chain={base}
-      apiKey={process.env.NEXT_PUBLIC_MINIKIT_API_KEY || 'demo-api-key'}
-    >
-      {children}
-    </MiniKitProvider>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }

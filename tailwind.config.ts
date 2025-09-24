@@ -65,6 +65,10 @@ const config: Config = {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
+        error: {
+          DEFAULT: "var(--error)",
+          foreground: "var(--error-foreground)",
+        },
         chart: {
           1: "var(--chart-1)",
           2: "var(--chart-2)",

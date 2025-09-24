@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -13,6 +12,8 @@ import { Tag } from '@/components/ui/Tag';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { InFrameNotification } from '@/components/ui/InFrameNotification';
+import { X402Demo } from '@/components/X402Demo';
+import { usePaymentService } from '@/lib/payment-service';
 import { mockUsers, mockOpportunities, mockCampaigns, mockResources } from '@/lib/mock-data';
 import { EXPERTISE_TAGS, INTEREST_TAGS } from '@/lib/constants';
 import { Globe, Users as UsersIcon, BarChart3 } from 'lucide-react';
@@ -27,7 +28,7 @@ export default function HealthConnectApp() {
     message: string;
   } | null>(null);
 
-  const { context } = useMiniKit();
+  const { isConnected, address } = usePaymentService();
 
   const showNotification = (type: 'success' | 'info' | 'warning', message: string) => {
     setNotification({ type, message });
@@ -131,6 +132,9 @@ export default function HealthConnectApp() {
           ))}
         </div>
       </div>
+
+      {/* X402 Payment Demo */}
+      <X402Demo />
     </div>
   );
 
@@ -363,14 +367,14 @@ export default function HealthConnectApp() {
           <div className="text-center mb-6">
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3">
               <span className="text-2xl font-semibold text-accent">
-                {context?.user?.displayName ? context.user.displayName.charAt(0) : 'U'}
+                {isConnected ? '₿' : 'U'}
               </span>
             </div>
             <h3 className="heading">
-              {context?.user?.displayName || 'User Profile'}
+              {isConnected ? `Wallet Connected` : 'User Profile'}
             </h3>
             <p className="text-secondary-text">
-              {context?.user?.username ? `@${context.user.username}` : 'Public Health Professional'}
+              {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Public Health Professional'}
             </p>
           </div>
           
