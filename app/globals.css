@@ -5,34 +5,173 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
+  :root {
+    /* Primary palette - Health Blue */
+    --primary: 221 83% 53%;
+    --primary-50: 219 100% 97%;
+    --primary-100: 220 100% 94%;
+    --primary-200: 221 96% 87%;
+    --primary-300: 221 94% 77%;
+    --primary-400: 221 89% 65%;
+    --primary-500: 221 83% 53%;
+    --primary-600: 221 80% 44%;
+    --primary-700: 221 79% 36%;
+    --primary-800: 221 74% 30%;
+    --primary-900: 222 65% 25%;
+    --primary-950: 223 67% 15%;
+
+    /* Accent palette - Health Green */
+    --accent: 162 63% 41%;
+    --accent-50: 162 100% 97%;
+    --accent-100: 163 100% 93%;
+    --accent-200: 162 93% 85%;
+    --accent-300: 162 84% 74%;
+    --accent-400: 162 71% 59%;
+    --accent-500: 162 63% 41%;
+    --accent-600: 162 75% 34%;
+    --accent-700: 163 79% 28%;
+    --accent-800: 163 73% 23%;
+    --accent-900: 164 67% 19%;
+    --accent-950: 165 85% 10%;
+
+    /* Semantic colors - Light theme */
+    --bg: 210 20% 98%;
+    --surface: 0 0% 100%;
+    --text: 221 39% 11%;
+    --secondary-text: 221 13% 46%;
+    --border: 221 20% 92%;
+    --input: 221 20% 96%;
+    --ring: 221 83% 53%;
+
+    /* State colors */
+    --muted: 221 13% 91%;
+    --muted-foreground: 221 13% 46%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 25 95% 6%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 98%;
+
+    /* Radius */
+    --radius: 12px;
+
+    /* Accent HSL for glow effects */
+    --accent-hsl: 162, 63%, 41%;
+  }
+
+  .dark {
+    /* Primary palette - adjusted for dark theme */
+    --primary: 221 83% 58%;
+    --primary-50: 222 65% 5%;
+    --primary-100: 223 67% 10%;
+    --primary-200: 221 74% 15%;
+    --primary-300: 221 79% 20%;
+    --primary-400: 221 80% 29%;
+    --primary-500: 221 83% 44%;
+    --primary-600: 221 83% 53%;
+    --primary-700: 221 89% 65%;
+    --primary-800: 221 94% 77%;
+    --primary-900: 221 96% 87%;
+    --primary-950: 220 100% 94%;
+
+    /* Accent palette - brighter for dark theme */
+    --accent: 162 71% 50%;
+    --accent-50: 165 85% 10%;
+    --accent-100: 164 67% 19%;
+    --accent-200: 163 73% 23%;
+    --accent-300: 163 79% 28%;
+    --accent-400: 162 75% 34%;
+    --accent-500: 162 63% 41%;
+    --accent-600: 162 71% 50%;
+    --accent-700: 162 71% 59%;
+    --accent-800: 162 84% 74%;
+    --accent-900: 162 93% 85%;
+    --accent-950: 163 100% 93%;
+
+    /* Semantic colors - Dark theme */
+    --bg: 222 47% 6%;
+    --surface: 222 47% 9%;
+    --text: 221 20% 94%;
+    --secondary-text: 221 13% 65%;
+    --border: 222 47% 15%;
+    --input: 222 47% 12%;
+    --ring: 221 83% 53%;
+
+    /* State colors - Dark theme */
+    --muted: 222 47% 15%;
+    --muted-foreground: 221 13% 65%;
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --warning: 43 96% 65%;
+    --warning-foreground: 25 95% 95%;
+    --success: 142 71% 55%;
+    --success-foreground: 0 0% 98%;
+
+    /* Accent HSL for glow effects in dark mode */
+    --accent-hsl: 162, 71%, 50%;
+  }
+
   * {
-    @apply border-gray-200;
+    @apply border-border;
   }
   
   body {
-    @apply bg-bg text-text font-sans;
+    @apply bg-bg text-text font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply text-text;
   }
+
+  /* Improved focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Custom scrollbar for webkit browsers */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary-text;
+  }
+
+  /* Safe area support for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 @layer components {
   .display {
-    @apply text-3xl font-bold;
+    @apply text-3xl font-bold leading-tight;
   }
   
   .heading {
-    @apply text-xl font-semibold;
+    @apply text-xl font-semibold leading-tight;
   }
   
   .body {
-    @apply text-base font-normal;
+    @apply text-base font-normal leading-relaxed;
   }
   
   .caption {
-    @apply text-sm font-light;
+    @apply text-sm font-normal leading-relaxed;
   }
   
   .container-custom {
@@ -40,19 +179,50 @@
   }
   
   .card {
-    @apply bg-surface rounded-lg shadow-card p-4;
+    @apply bg-surface rounded-lg shadow-card p-4 border border-border/50 transition-all duration-200 hover:shadow-lg hover:border-border;
   }
   
   .btn-primary {
-    @apply bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors duration-200;
+    @apply bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95;
   }
   
   .btn-outline {
-    @apply border border-primary text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:text-white transition-colors duration-200;
+    @apply border border-primary text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:text-white transition-all duration-200 active:scale-95;
   }
   
   .btn-text {
-    @apply text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:bg-opacity-10 transition-colors duration-200;
+    @apply text-primary px-4 py-2 rounded-md font-medium hover:bg-primary/10 transition-all duration-200 active:scale-95;
+  }
+
+  /* Enhanced utility classes */
+  .glass {
+    @apply bg-surface/80 backdrop-blur-md border border-border/50;
+  }
+
+  .glow {
+    @apply shadow-glow;
+  }
+
+  /* Text truncation utilities */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 

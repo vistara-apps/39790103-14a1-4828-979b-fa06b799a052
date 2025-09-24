@@ -20,6 +20,23 @@ export const metadata: Metadata = {
     title: 'HealthConnect',
     description: 'Connect, Advocate, and Thrive in Public Health',
   },
+  other: {
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'apple-mobile-web-app-title': 'HealthConnect',
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FAFBFC' },
+    { media: '(prefers-color-scheme: dark)', color: '#0F1419' }
+  ],
 };
 
 export default function RootLayout({

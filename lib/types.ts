@@ -89,6 +89,7 @@ export interface TagProps {
   variant?: 'default' | 'filter';
   selected?: boolean;
   onClick?: () => void;
+  onRemove?: () => void;
 }
 
 export interface NotificationProps {
